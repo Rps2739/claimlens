@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "currency": "INR",
+  "_about": "The complete decision policy for ClaimLens. Every monetary outcome the system can produce is determined by the numbers in this file. A business owner can change refund behaviour here without touching code or prompts, and nothing in the AI layer can override these values.",
+
+  "confidence_threshold": 0.7,
+  "_confidence_threshold": "Minimum vision-model confidence required to decide automatically. Below this the claim goes to a human. Raising this number makes the system more cautious.",
+
+  "auto_approve_ceiling": 15000,
+  "_auto_approve_ceiling": "Maximum item value the system may resolve without human sign-off. Any claim on an item worth more than this escalates regardless of how clear the damage is.",
+
+  "fraud_watch_claim_count": 3,
+  "_fraud_watch_claim_count": "Number of prior claims that triggers mandatory human review of this account.",
+
+  "warranty_days": {
+    "electronics": 365,
+    "apparel": 30,
+    "home": 180,
+    "other": 90
+  },
+  "_warranty_days": "Days after delivery during which a claim is eligible, per product category.",
+
+  "severity_thresholds": {
+    "full_refund_min": 4,
+    "replace_min": 2
+  },
+  "_severity_thresholds": "Severity 4-5 refunds in full. Severity 2-3 ships a replacement. Severity 1 is treated as cosmetic.",
+
+  "cosmetic_partial_refund_rate": 0.15,
+  "_cosmetic_partial_refund_rate": "Goodwill credit for severity-1 cosmetic defects, as a fraction of item value."
+}

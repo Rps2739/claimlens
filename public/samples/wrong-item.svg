@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="A red shirt delivered in place of the navy shirt that was ordered">
+  <defs>
+    <linearGradient id="bgW" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6f2ec"/>
+      <stop offset="100%" stop-color="#e6ded2"/>
+    </linearGradient>
+    <linearGradient id="shirtW" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#d94a3d"/>
+      <stop offset="100%" stop-color="#a82f26"/>
+    </linearGradient>
+    <linearGradient id="bagW" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2f2f4"/>
+      <stop offset="100%" stop-color="#d9d9de"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="450" fill="url(#bgW)"/>
+  <ellipse cx="300" cy="406" rx="200" ry="26" fill="#7a6a56" opacity="0.18"/>
+
+  <!-- opened poly mailer behind -->
+  <path d="M92 150 L508 150 L488 402 L112 402 Z" fill="url(#bagW)"/>
+  <path d="M92 150 L508 150 L502 178 L98 178 Z" fill="#c9c9d0"/>
+  <!-- torn opening -->
+  <path d="M98 178 L140 190 L182 174 L226 192 L272 174 L318 192 L364 176 L410 192 L456 176 L502 188 L502 178 L98 178 Z"
+        fill="#b4b4bc"/>
+
+  <!-- shipping label -->
+  <rect x="376" y="206" width="112" height="70" rx="3" fill="#ffffff" stroke="#c4c4cc" stroke-width="1.5"/>
+  <text x="386" y="226" font-family="Helvetica,Arial,sans-serif" font-size="9.5" fill="#55555e">ORDER</text>
+  <text x="386" y="240" font-family="Helvetica,Arial,sans-serif" font-size="11" font-weight="bold" fill="#1c1c22">ORD-4417</text>
+  <text x="386" y="256" font-family="Helvetica,Arial,sans-serif" font-size="9.5" fill="#55555e">ITEM</text>
+  <text x="386" y="269" font-family="Helvetica,Arial,sans-serif" font-size="10.5" font-weight="bold" fill="#1c3f6e">NAVY POLO — M</text>
+  <g fill="#1c1c22">
+    <rect x="386" y="215" width="1.6" height="0" /><!-- spacer -->
+  </g>
+
+  <!-- ===== the RED shirt actually delivered ===== -->
+  <g transform="translate(0,8)">
+    <!-- sleeves -->
+    <path d="M196 214 L146 246 L164 292 L206 268 Z" fill="url(#shirtW)"/>
+    <path d="M356 214 L406 246 L388 292 L346 268 Z" fill="url(#shirtW)"/>
+    <!-- body -->
+    <path d="M196 214 Q276 196 356 214 L368 372 Q276 390 184 372 Z" fill="url(#shirtW)"/>
+    <!-- collar -->
+    <path d="M252 206 Q276 232 300 206 Q290 198 276 198 Q262 198 252 206 Z" fill="#8f2620"/>
+    <path d="M248 202 Q276 236 304 202" fill="none" stroke="#7d201b" stroke-width="3"/>
+    <!-- placket -->
+    <rect x="272" y="228" width="8" height="58" fill="#8f2620" opacity="0.8"/>
+    <circle cx="276" cy="244" r="2.6" fill="#f0e4d8"/>
+    <circle cx="276" cy="268" r="2.6" fill="#f0e4d8"/>
+    <!-- folds -->
+    <g stroke="#8f2620" stroke-width="2" fill="none" opacity="0.45">
+      <path d="M214 300 Q248 316 214 348"/>
+      <path d="M338 300 Q306 318 340 350"/>
+      <path d="M276 320 Q276 348 268 370"/>
+    </g>
+  </g>
+
+  <!-- size tag -->
+  <rect x="288" y="212" width="30" height="20" rx="2" fill="#fbfbfb" opacity="0.95"/>
+  <text x="303" y="226" font-family="Helvetica,Arial,sans-serif" font-size="11" font-weight="bold"
+        fill="#33333a" text-anchor="middle">L</text>
+
+  <!-- swatch comparison: ordered vs received -->
+  <g transform="translate(112,206)">
+    <rect x="0" y="0" width="70" height="86" rx="4" fill="#ffffff" stroke="#cdcdd4" stroke-width="1.5"/>
+    <text x="35" y="16" font-family="Helvetica,Arial,sans-serif" font-size="8.5" fill="#66666e" text-anchor="middle">ORDERED</text>
+    <rect x="12" y="24" width="46" height="34" rx="3" fill="#1c3f6e"/>
+    <text x="35" y="72" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#33333a" text-anchor="middle">Navy · M</text>
+  </g>
+  <g transform="translate(112,300)">
+    <rect x="0" y="0" width="70" height="86" rx="4" fill="#ffffff" stroke="#d94a3d" stroke-width="2"/>
+    <text x="35" y="16" font-family="Helvetica,Arial,sans-serif" font-size="8.5" fill="#66666e" text-anchor="middle">RECEIVED</text>
+    <rect x="12" y="24" width="46" height="34" rx="3" fill="#d94a3d"/>
+    <text x="35" y="72" font-family="Helvetica,Arial,sans-serif" font-size="9" fill="#33333a" text-anchor="middle">Red · L</text>
+  </g>
+</svg>

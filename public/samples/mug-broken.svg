@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="Ceramic mug broken into pieces inside a crushed shipping box">
+  <defs>
+    <linearGradient id="bgM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#efe7db"/>
+      <stop offset="100%" stop-color="#ddd0be"/>
+    </linearGradient>
+    <linearGradient id="cardM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c69963"/>
+      <stop offset="100%" stop-color="#a87c48"/>
+    </linearGradient>
+    <linearGradient id="cardInnerM" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8d6435"/>
+      <stop offset="100%" stop-color="#704e28"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="450" fill="url(#bgM)"/>
+  <ellipse cx="300" cy="398" rx="215" ry="28" fill="#6b5a44" opacity="0.22"/>
+
+  <!-- crushed box: back wall, dented inward -->
+  <path d="M112 210 L140 150 L470 150 L492 210 Z" fill="url(#cardInnerM)"/>
+  <path d="M140 150 Q250 176 300 158 Q370 138 470 150 L470 150 L140 150 Z" fill="#5e4120" opacity="0.5"/>
+
+  <!-- box floor -->
+  <path d="M112 210 L492 210 L462 356 L142 356 Z" fill="#7d5730"/>
+
+  <!-- front panel, buckled -->
+  <path d="M142 356 L462 356 L470 300 Q300 336 132 300 Z" fill="url(#cardM)"/>
+  <path d="M132 300 Q300 336 470 300" fill="none" stroke="#8a6236" stroke-width="3"/>
+  <!-- crush creases -->
+  <g stroke="#7a5227" stroke-width="2" fill="none" opacity="0.75">
+    <path d="M196 356 L188 306"/>
+    <path d="M262 356 L268 314"/>
+    <path d="M338 356 L330 316"/>
+    <path d="M404 356 L414 308"/>
+  </g>
+
+  <!-- side flaps, torn -->
+  <path d="M112 210 L86 244 L104 262 L142 356 Z" fill="#b08850"/>
+  <path d="M492 210 L520 246 L500 266 L462 356 Z" fill="#b08850"/>
+
+  <!-- FRAGILE label, ironic -->
+  <rect x="352" y="232" width="96" height="34" rx="3" fill="#f4ece0" opacity="0.92" transform="rotate(-6 400 249)"/>
+  <text x="400" y="254" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="bold"
+        fill="#b4342c" text-anchor="middle" letter-spacing="1.5" transform="rotate(-6 400 249)">FRAGILE</text>
+
+  <!-- ===== broken mug pieces ===== -->
+  <!-- largest piece: base with jagged top edge -->
+  <path d="M196 344 L196 268 L206 250 L226 262 L242 244 L258 258 L272 240 L286 256 L292 268 L292 344 Z"
+        fill="#f7f4ef"/>
+  <path d="M196 344 L292 344 L288 356 L200 356 Z" fill="#ded8cf"/>
+  <path d="M196 268 L206 250 L226 262 L242 244 L258 258 L272 240 L286 256 L292 268"
+        fill="none" stroke="#b9b1a5" stroke-width="2.2"/>
+  <!-- glaze band -->
+  <rect x="196" y="296" width="96" height="16" fill="#3f7fa8" opacity="0.75"/>
+
+  <!-- detached handle -->
+  <path d="M312 276 Q356 268 358 306 Q360 342 316 338"
+        fill="none" stroke="#f7f4ef" stroke-width="15" stroke-linecap="round"/>
+  <path d="M312 276 Q356 268 358 306 Q360 342 316 338"
+        fill="none" stroke="#cfc7bb" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- mid shard -->
+  <polygon points="128,338 158,300 178,318 168,352 136,354" fill="#f4f0ea"/>
+  <polygon points="128,338 158,300 178,318 168,352 136,354" fill="none" stroke="#bdb5a9" stroke-width="1.8"/>
+
+  <!-- small shards scattered -->
+  <polygon points="382,332 404,318 414,340 392,348" fill="#f4f0ea" stroke="#bdb5a9" stroke-width="1.4"/>
+  <polygon points="424,346 442,338 448,354 428,358" fill="#efeae3" stroke="#bdb5a9" stroke-width="1.2"/>
+  <polygon points="304,352 322,344 328,358 308,360" fill="#efeae3" stroke="#bdb5a9" stroke-width="1.2"/>
+
+  <!-- ceramic dust -->
+  <g fill="#ffffff" opacity="0.75">
+    <circle cx="248" cy="360" r="2.4"/><circle cx="336" cy="366" r="1.8"/>
+    <circle cx="188" cy="364" r="2"/><circle cx="366" cy="358" r="1.5"/>
+    <circle cx="286" cy="368" r="1.6"/><circle cx="418" cy="364" r="1.7"/>
+  </g>
+</svg>

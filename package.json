@@ -1,0 +1,29 @@
+{
+  "name": "claimlens",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Photo-first customer care agent. Vision AI perceives, a deterministic policy engine decides.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@google/genai": "^2.12.0",
+    "next": "^16.2.10",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  }
+}

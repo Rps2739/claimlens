@@ -1,0 +1,21 @@
+node_modules/
+.next/
+out/
+build/
+
+# Secrets — never commit. The example file is the one that ships.
+.env
+.env.local
+.env*.local
+
+.DS_Store
+*.pem
+npm-debug.log*
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Hackathon brief and rubric — FlowZint's own material, kept out of the
+# public repo. Local reference only.
+New Text Document.txt
+Screenshot*.png

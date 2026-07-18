@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="Smartphone with a shattered screen">
+  <defs>
+    <linearGradient id="deskP" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d3d46"/>
+      <stop offset="100%" stop-color="#26262e"/>
+    </linearGradient>
+    <linearGradient id="screenP" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b2733"/>
+      <stop offset="55%" stop-color="#101820"/>
+      <stop offset="100%" stop-color="#0a0f16"/>
+    </linearGradient>
+    <radialGradient id="impactP" cx="0.42" cy="0.36" r="0.5">
+      <stop offset="0%" stop-color="#e8f2ff" stop-opacity="0.85"/>
+      <stop offset="35%" stop-color="#9fc4e8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#9fc4e8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="600" height="450" fill="url(#deskP)"/>
+  <ellipse cx="300" cy="410" rx="190" ry="26" fill="#000" opacity="0.35"/>
+
+  <!-- phone body -->
+  <rect x="196" y="46" width="208" height="358" rx="26" fill="#0d0d12"/>
+  <rect x="201" y="51" width="198" height="348" rx="22" fill="#1a1a22"/>
+  <rect x="209" y="60" width="182" height="330" rx="16" fill="url(#screenP)"/>
+
+  <!-- impact bloom -->
+  <ellipse cx="285" cy="180" rx="120" ry="130" fill="url(#impactP)"/>
+
+  <!-- radiating cracks from impact point (285,180) -->
+  <g stroke="#cfe2f7" stroke-width="1.6" fill="none" opacity="0.92" stroke-linecap="round">
+    <path d="M285 180 L228 74"/>
+    <path d="M285 180 L318 62"/>
+    <path d="M285 180 L372 108"/>
+    <path d="M285 180 L386 214"/>
+    <path d="M285 180 L360 300"/>
+    <path d="M285 180 L292 358"/>
+    <path d="M285 180 L214 330"/>
+    <path d="M285 180 L212 232"/>
+    <path d="M285 180 L216 152"/>
+  </g>
+
+  <!-- concentric fracture rings -->
+  <g stroke="#b9d4ee" stroke-width="1.2" fill="none" opacity="0.7">
+    <path d="M247 141 L268 128 L299 132 L318 148 L322 172 L308 196 L280 204 L254 194 L241 170 Z"/>
+    <path d="M224 116 L262 96 L316 100 L352 128 L358 172 L338 218 L296 236 L246 226 L219 190 L214 150 Z"/>
+    <path d="M216 84 L268 62 L340 76 L378 122 L384 186 L352 254 L292 276 L228 260 L200 208 Z" opacity="0.45"/>
+  </g>
+
+  <!-- fine secondary splinters -->
+  <g stroke="#e6f0fb" stroke-width="0.7" fill="none" opacity="0.55">
+    <path d="M262 130 L246 108"/><path d="M310 140 L330 118"/>
+    <path d="M318 190 L344 202"/><path d="M268 208 L252 240"/>
+    <path d="M300 208 L312 244"/><path d="M240 168 L212 176"/>
+    <path d="M292 122 L300 92"/><path d="M334 160 L366 156"/>
+  </g>
+
+  <!-- shard highlights -->
+  <g fill="#dbeaf9" opacity="0.16">
+    <polygon points="268,128 299,132 285,180"/>
+    <polygon points="318,148 322,172 285,180"/>
+    <polygon points="254,194 280,204 285,180"/>
+  </g>
+
+  <!-- lifted glass fragment near edge -->
+  <polygon points="352,254 388,240 396,282 358,296" fill="#c8def5" opacity="0.3"/>
+  <polygon points="352,254 388,240 396,282 358,296" fill="none" stroke="#eaf3fd" stroke-width="1"/>
+
+  <!-- dead pixel bleed -->
+  <rect x="209" y="300" width="182" height="46" fill="#000" opacity="0.55"/>
+  <rect x="209" y="312" width="182" height="7" fill="#2a5f8f" opacity="0.45"/>
+  <rect x="209" y="330" width="182" height="4" fill="#7a3b52" opacity="0.4"/>
+
+  <!-- hardware details -->
+  <rect x="272" y="66" width="56" height="7" rx="3.5" fill="#2c2c36"/>
+  <rect x="404" y="120" width="4" height="46" rx="2" fill="#2c2c36"/>
+  <rect x="192" y="112" width="4" height="30" rx="2" fill="#2c2c36"/>
+</svg>

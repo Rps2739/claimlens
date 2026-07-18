@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="A badly blurred, underexposed photograph in which no item is identifiable">
+  <defs>
+    <filter id="heavyBlur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="17"/>
+    </filter>
+    <filter id="softBlur" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <linearGradient id="darkRoom" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#2b2f36"/>
+      <stop offset="60%" stop-color="#191c21"/>
+      <stop offset="100%" stop-color="#101216"/>
+    </linearGradient>
+    <radialGradient id="vign" cx="0.5" cy="0.5" r="0.72">
+      <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.72"/>
+    </radialGradient>
+    <radialGradient id="flareG" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#ffe9b8" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ffe9b8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="600" height="450" fill="url(#darkRoom)"/>
+
+  <!-- indistinct smeared masses: nothing resolves into an object -->
+  <g filter="url(#heavyBlur)" opacity="0.85">
+    <ellipse cx="268" cy="238" rx="128" ry="96" fill="#4a5058"/>
+    <ellipse cx="352" cy="286" rx="92" ry="74" fill="#3a3f47"/>
+    <ellipse cx="214" cy="300" rx="76" ry="58" fill="#565c66"/>
+    <rect x="188" y="150" width="196" height="120" rx="40" fill="#444a53" opacity="0.7"/>
+  </g>
+
+  <!-- motion streaks: camera moved during exposure -->
+  <g filter="url(#softBlur)" opacity="0.5" stroke-linecap="round">
+    <path d="M148 214 L436 262" stroke="#6f7784" stroke-width="16" fill="none"/>
+    <path d="M164 268 L420 312" stroke="#5b626e" stroke-width="12" fill="none"/>
+    <path d="M180 172 L400 208" stroke="#666e7a" stroke-width="9" fill="none"/>
+  </g>
+
+  <!-- blown-out highlight, likely a lamp behind the subject -->
+  <ellipse cx="418" cy="150" rx="120" ry="96" fill="url(#flareG)"/>
+  <ellipse cx="424" cy="146" rx="34" ry="28" fill="#fff3d4" opacity="0.28" filter="url(#softBlur)"/>
+
+  <!-- vignette -->
+  <rect width="600" height="450" fill="url(#vign)"/>
+
+  <!-- sensor noise: high ISO in a dark room -->
+  <g opacity="0.16">
+    <circle cx="82" cy="112" r="1.3" fill="#cfd6df"/><circle cx="518" cy="88" r="1.1" fill="#cfd6df"/>
+    <circle cx="146" cy="386" r="1.4" fill="#cfd6df"/><circle cx="468" cy="392" r="1.2" fill="#cfd6df"/>
+    <circle cx="316" cy="66" r="1.1" fill="#cfd6df"/><circle cx="248" cy="410" r="1.3" fill="#cfd6df"/>
+    <circle cx="556" cy="248" r="1.2" fill="#cfd6df"/><circle cx="52" cy="262" r="1.1" fill="#cfd6df"/>
+    <circle cx="392" cy="428" r="1.2" fill="#cfd6df"/><circle cx="122" cy="196" r="1" fill="#cfd6df"/>
+    <circle cx="486" cy="330" r="1.1" fill="#cfd6df"/><circle cx="206" cy="94" r="1.2" fill="#cfd6df"/>
+    <circle cx="352" cy="376" r="1" fill="#cfd6df"/><circle cx="574" cy="176" r="1.1" fill="#cfd6df"/>
+    <circle cx="34" cy="352" r="1.2" fill="#cfd6df"/><circle cx="286" cy="140" r="0.9" fill="#cfd6df"/>
+  </g>
+</svg>
