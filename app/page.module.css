@@ -1,357 +1,526 @@
+/* ClaimLens — the case docket.
+   Structure follows the document it represents: a docket header, a case rail,
+   an exhibit, a chain of custody, and the correspondence that results. */
+
 .page {
-  max-width: 1240px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 32px 24px 64px;
+  padding: 0 var(--s5) var(--s7);
 }
 
-/* ------------------------------- header ------------------------------- */
+/* ============================ docket header ============================= */
 
-.header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding-bottom: 24px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid var(--border);
-}
-
-.brandRow {
+.docket {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  padding: var(--s4) 0 var(--s3);
+  margin-bottom: var(--s5);
+  background: color-mix(in srgb, var(--ink-900) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ink-600);
 }
 
 .mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: linear-gradient(140deg, var(--accent), #d97706);
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--brass);
+  border-radius: var(--r-sm);
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px rgba(240, 180, 41, 0.25), 0 6px 18px -6px rgba(240, 180, 41, 0.5);
 }
 
-.mark span {
-  width: 15px;
-  height: 15px;
+/* An aperture: the lens that looks, ruled like an instrument. */
+.mark::before {
+  content: "";
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  border: 3px solid #16110a;
+  border: 1.5px solid var(--brass);
 }
 
-.brand {
-  font-size: 25px;
-  font-weight: 680;
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-left: 1px solid color-mix(in srgb, var(--brass) 38%, transparent);
+  border-right: 1px solid color-mix(in srgb, var(--brass) 38%, transparent);
 }
 
-.tagline {
-  margin: 3px 0 0;
-  font-size: 14px;
-  color: var(--text-dim);
-  max-width: 60ch;
+.brandName {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.tagline strong {
-  color: var(--text);
+.brandLine {
+  margin: 1px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-text-faint);
+  letter-spacing: 0.01em;
+}
+
+.thesis {
+  margin-left: auto;
+  padding-left: var(--s4);
+  border-left: 1px solid var(--ink-600);
+  font-size: 12.5px;
+  color: var(--ink-text-dim);
+  max-width: 40ch;
+  line-height: 1.45;
+}
+
+.thesis strong {
+  color: var(--ink-text);
   font-weight: 600;
 }
 
-.modeBadge {
+.statusPill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 13px;
-  border-radius: 999px;
-  font-size: 12.5px;
-  font-weight: 550;
-  border: 1px solid var(--border-bright);
-  background: var(--bg-raised);
+  gap: var(--s2);
+  padding: 5px 10px;
+  border: 1px solid var(--ink-500);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
 .dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: currentColor;
 }
 
-.modeLive {
-  color: var(--refund);
-  border-color: rgba(61, 220, 145, 0.35);
+.statusLive {
+  color: var(--v-refund);
+  border-color: color-mix(in srgb, var(--v-refund) 40%, transparent);
 }
 
-.modeDemo {
-  color: var(--accent);
-  border-color: rgba(240, 180, 41, 0.35);
+.statusDemo {
+  color: var(--brass);
+  border-color: color-mix(in srgb, var(--brass) 40%, transparent);
 }
 
-/* ------------------------------- layout ------------------------------- */
+/* ================================ layout ================================ */
 
 .layout {
   display: grid;
-  grid-template-columns: 310px minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: 296px minmax(0, 1fr);
+  gap: var(--s6);
   align-items: start;
 }
 
-@media (max-width: 940px) {
+@media (max-width: 1000px) {
   .layout {
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--s5);
   }
 }
 
-/* ------------------------------ sidebar ------------------------------- */
-
-.sidebar {
+.rail {
   position: sticky;
-  top: 24px;
+  top: 84px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--s2);
 }
 
-@media (max-width: 940px) {
-  .sidebar {
+@media (max-width: 1000px) {
+  .rail {
     position: static;
   }
 }
 
-.sectionTitle {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--text-faint);
-  font-weight: 620;
-}
-
-.sectionHint {
-  margin: 0 0 6px;
-  font-size: 13px;
-  color: var(--text-dim);
-}
-
-.sampleList {
+.main {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.sampleCard {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 9px;
-  text-align: left;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  transition: border-color 0.15s, background 0.15s, transform 0.15s;
-}
-
-.sampleCard:hover {
-  border-color: var(--border-bright);
-  transform: translateX(2px);
-}
-
-.sampleActive {
-  border-color: var(--accent);
-  background: linear-gradient(90deg, rgba(240, 180, 41, 0.1), var(--bg-raised) 55%);
-}
-
-.sampleThumb {
-  width: 50px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  background: var(--bg-inset);
-  flex-shrink: 0;
-}
-
-.sampleText {
-  display: flex;
-  flex-direction: column;
+  gap: var(--s4);
   min-width: 0;
 }
 
-.sampleLabel {
+/* A ruled section label. The rule runs to the edge — a ledger heading. */
+.railTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-text-faint);
+}
+
+.railTitle::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--ink-600);
+}
+
+.railHint {
+  margin: 0 0 var(--s2);
+  font-size: 12.5px;
+  color: var(--ink-text-dim);
+  line-height: 1.45;
+}
+
+/* ============================== case rail =============================== */
+
+.caseList {
+  display: flex;
+  flex-direction: column;
+}
+
+.caseRow {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s3) var(--s3) var(--s3) var(--s2);
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom-color: var(--ink-600);
+  border-radius: 0;
+  color: var(--ink-text);
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.caseRow:first-child {
+  border-top: 1px solid var(--ink-600);
+}
+
+.caseRow:hover {
+  background: var(--ink-800);
+}
+
+.caseRowActive,
+.caseRowActive:hover {
+  background: var(--ink-800);
+  border-color: var(--ink-500);
+  border-left-color: var(--brass);
+}
+
+.caseThumb {
+  width: 46px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--ink-600);
+  background: var(--ink-700);
+  filter: saturate(0.75);
+  transition: filter var(--base) var(--ease);
+}
+
+.caseRowActive .caseThumb {
+  filter: none;
+  border-color: var(--ink-500);
+}
+
+.caseMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.caseLabel {
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
-.sampleTeaser {
+.caseTeaser {
   font-size: 11.5px;
-  color: var(--text-dim);
   line-height: 1.35;
+  color: var(--ink-text-dim);
 }
 
-.uploadBlock {
-  margin-top: 14px;
-  padding: 13px;
-  border: 1px dashed var(--border-bright);
-  border-radius: var(--radius);
+/* ============================== upload ================================== */
+
+.uploadZone {
+  margin-top: var(--s4);
+  padding: var(--s3);
+  border: 1px dashed var(--ink-500);
+  border-radius: var(--r);
 }
 
 .uploadLabel {
   display: block;
   font-size: 12.5px;
-  font-weight: 600;
-  margin-bottom: 8px;
+  font-weight: 500;
+  margin-bottom: var(--s2);
 }
 
 .fileInput {
   width: 100%;
   font-size: 12px;
-  color: var(--text-dim);
+  color: var(--ink-text-dim);
 }
 
 .fileInput::file-selector-button {
-  margin-right: 9px;
-  padding: 5px 11px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-bright);
-  background: var(--bg-inset);
-  color: var(--text);
+  margin-right: var(--s2);
+  padding: 10px 14px;
+  min-height: 44px;
+  border: 1px solid var(--ink-500);
+  border-radius: var(--r-sm);
+  background: var(--ink-700);
+  color: var(--ink-text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   cursor: pointer;
-  font-size: 12px;
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.fileInput::file-selector-button:hover {
+  background: var(--ink-600);
+  border-color: var(--ink-400);
 }
 
 .uploadNote {
-  margin: 9px 0 0;
+  margin: var(--s2) 0 0;
   font-size: 11.5px;
-  color: var(--text-faint);
-  line-height: 1.4;
+  line-height: 1.45;
+  color: var(--ink-text-faint);
 }
 
-.orderCard {
-  margin-top: 14px;
-  padding: 14px;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+/* ============================ order record ============================== */
+
+.record {
+  margin-top: var(--s4);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--r);
+  background: var(--ink-800);
 }
 
-.orderTitle {
-  font-size: 12px;
+.recordHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s3);
+  border-bottom: 1px solid var(--ink-600);
+}
+
+.recordTitle {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--text-faint);
-  margin-bottom: 10px;
-  font-weight: 620;
+  color: var(--ink-text-faint);
 }
 
-.orderList {
+.lockTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.lockTag svg {
+  width: 11px;
+  height: 11px;
+}
+
+.recordList {
   margin: 0;
+  padding: var(--s3);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
   font-size: 12.5px;
 }
 
-.orderList > div {
+.recordList > div {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  align-items: baseline;
+  gap: var(--s3);
 }
 
-.orderList dt {
-  color: var(--text-faint);
+/* Leader dots — a ledger convention, and they make the value scannable. */
+.recordList dt {
+  color: var(--ink-text-faint);
   flex-shrink: 0;
 }
 
-.orderList dd {
+.recordList dd {
   margin: 0;
   text-align: right;
-  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-text);
 }
 
-.orderNote {
-  margin: 12px 0 0;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
+.recordValue {
+  color: var(--brass);
+  font-weight: 500;
+}
+
+.recordNote {
+  margin: 0;
+  padding: var(--s3);
+  border-top: 1px solid var(--ink-600);
   font-size: 11px;
-  color: var(--text-faint);
-  line-height: 1.45;
+  line-height: 1.5;
+  color: var(--ink-text-faint);
 }
 
-/* ------------------------------- main --------------------------------- */
+/* =============================== exhibit ================================ */
 
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.claimCard {
+.exhibit {
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  gap: 18px;
-  padding: 16px;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 13px;
+  grid-template-columns: 268px minmax(0, 1fr);
+  gap: var(--s5);
+  padding: var(--s4);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--r);
+  background: var(--ink-800);
 }
 
-@media (max-width: 620px) {
-  .claimCard {
+@media (max-width: 700px) {
+  .exhibit {
     grid-template-columns: minmax(0, 1fr);
+    gap: var(--s4);
   }
 }
 
-.claimImage {
+.exhibitFrame {
+  position: relative;
+}
+
+.exhibitImage {
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: var(--radius);
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--r-sm);
+  background: var(--ink-700);
 }
 
-.claimBody {
+/* An evidence tag, pinned to the corner of the exhibit. */
+.exhibitTag {
+  position: absolute;
+  top: var(--s2);
+  left: var(--s2);
+  padding: 3px 8px;
+  background: color-mix(in srgb, var(--ink-900) 82%, transparent);
+  border: 1px solid var(--ink-500);
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-text-dim);
+  backdrop-filter: blur(4px);
+}
+
+.exhibitBody {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 14px;
-  position: relative;
+  gap: var(--s4);
+  min-width: 0;
 }
 
-.quoteMark {
-  position: absolute;
-  top: -18px;
-  left: -6px;
-  font-size: 62px;
-  line-height: 1;
-  color: var(--border-bright);
-  font-family: Georgia, serif;
-  pointer-events: none;
+.statementLabel {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-text-faint);
+  margin-bottom: var(--s2);
+  display: block;
 }
 
-.claimQuote {
+/* The customer's own words, set apart as testimony. */
+.statement {
   margin: 0;
-  font-size: 16.5px;
+  padding-left: var(--s4);
+  border-left: 2px solid var(--ink-500);
+  font-family: var(--serif);
+  font-size: 17px;
   line-height: 1.5;
-  color: var(--text);
-  position: relative;
+  max-width: 58ch;
+  color: var(--ink-text);
+  text-wrap: pretty;
+}
+
+.statementInput {
+  width: 100%;
+  max-width: 58ch;
+  resize: vertical;
+  padding: var(--s3);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--ink-700);
+  border: 1px solid var(--ink-500);
+  border-radius: var(--r-sm);
+  color: var(--ink-text);
+}
+
+.statementInput::placeholder {
+  color: var(--ink-text-faint);
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
 }
 
 .runButton {
-  align-self: flex-start;
-  padding: 11px 22px;
-  border-radius: var(--radius);
-  border: none;
-  background: var(--accent);
-  color: #1a1305;
-  font-weight: 650;
-  font-size: 14.5px;
-  transition: filter 0.15s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 12px 20px;
+  border: 1px solid var(--brass);
+  border-radius: var(--r-sm);
+  background: var(--brass);
+  color: #171102;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
 }
 
 .runButton:hover:not(:disabled) {
-  filter: brightness(1.08);
+  background: #d7b25c;
+  border-color: #d7b25c;
 }
 
 .runButton:active:not(:disabled) {
@@ -359,158 +528,26 @@
 }
 
 .runButton:disabled {
-  opacity: 0.55;
+  background: transparent;
+  color: var(--ink-text-faint);
+  border-color: var(--ink-500);
   cursor: not-allowed;
 }
 
-.error {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 13px 15px;
-  border-radius: var(--radius);
-  background: rgba(240, 103, 74, 0.09);
-  border: 1px solid rgba(240, 103, 74, 0.35);
-  font-size: 13.5px;
-  color: #ffc4b4;
-}
-
-.error strong {
-  color: var(--reject);
-}
-
-/* ------------------------------ pipeline ------------------------------ */
-
-.pipeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.stage {
-  position: relative;
-  padding: 15px 17px;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  opacity: 0.5;
-  transition: opacity 0.25s, border-color 0.25s;
-}
-
-/* connector line between stages */
-.stage:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  left: 33px;
-  bottom: -10px;
-  width: 1px;
-  height: 10px;
-  background: var(--border-bright);
-}
-
-.stage_running,
-.stage_done {
-  opacity: 1;
-}
-
-.stage_running {
-  border-color: var(--accent);
-}
-
-.stage_done {
-  border-color: var(--border-bright);
-}
-
-/* The engine stage is visually distinct: it is the part with no AI in it. */
-.stageEngine.stage_done {
-  border-color: rgba(74, 168, 240, 0.4);
-  background: linear-gradient(180deg, rgba(74, 168, 240, 0.06), var(--bg-raised) 60%);
-}
-
-.stageHead {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.stageNum {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 9px;
-  background: var(--bg-inset);
-  border: 1px solid var(--border-bright);
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--text-dim);
-}
-
-.stage_done .stageNum {
-  color: var(--text);
-}
-
-.stageEngine.stage_done .stageNum {
-  border-color: rgba(74, 168, 240, 0.5);
-  color: var(--replace);
-}
-
-.stageTitles {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex: 1;
-}
-
-.stageTitle {
-  font-size: 14.5px;
-  font-weight: 620;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.pureTag {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  padding: 2px 7px;
-  border-radius: 999px;
-  color: var(--replace);
-  background: rgba(74, 168, 240, 0.13);
-  border: 1px solid rgba(74, 168, 240, 0.3);
-}
-
-.stageSub {
-  font-size: 12px;
-  color: var(--text-dim);
-}
-
-.stageStatus {
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.timing {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  color: var(--text-faint);
-}
-
-.spinner {
-  display: block;
-  width: 15px;
-  height: 15px;
+.runSpinner {
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  border: 2px solid var(--border-bright);
-  border-top-color: var(--accent);
+  border: 2px solid color-mix(in srgb, #171102 30%, transparent);
+  border-top-color: #171102;
   animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--brass);
 }
 
 @keyframes spin {
@@ -519,15 +556,158 @@
   }
 }
 
-.stageBody {
-  margin-top: 13px;
-  padding-top: 13px;
-  padding-left: 45px;
-  border-top: 1px solid var(--border);
-  animation: fadeUp 0.3s ease both;
+/* ================================ alert ================================= */
+
+.alert {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--s3) var(--s4);
+  border: 1px solid color-mix(in srgb, var(--v-reject) 45%, transparent);
+  border-radius: var(--r);
+  background: color-mix(in srgb, var(--v-reject) 8%, transparent);
+  font-size: 13.5px;
+  color: #f3cec5;
 }
 
-@keyframes fadeUp {
+.alert strong {
+  color: var(--v-reject);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* =========================== chain of custody =========================== */
+
+.chain {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.station {
+  position: relative;
+  padding: var(--s4) var(--s4) var(--s4) 0;
+  padding-left: 60px;
+  border-left: 1px solid var(--ink-600);
+  margin-left: 17px;
+  opacity: 0.42;
+  transition: opacity var(--base) var(--ease);
+}
+
+.station:last-child {
+  border-left-color: transparent;
+}
+
+.stationRunning,
+.stationDone {
+  opacity: 1;
+}
+
+/* The index sits ON the spine — a stamped station marker, not an eyebrow.
+   The chain is a real sequence: gates run before remedies, so order is
+   information the reader needs. */
+.stationIndex {
+  position: absolute;
+  left: -17px;
+  top: var(--s4);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ink-500);
+  border-radius: 50%;
+  background: var(--ink-900);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-text-faint);
+  transition:
+    border-color var(--base) var(--ease),
+    color var(--base) var(--ease);
+}
+
+.stationDone .stationIndex {
+  border-color: var(--ink-400);
+  color: var(--ink-text);
+}
+
+.stationRunning .stationIndex {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+/* The engine station is the one with no AI in it — marked in the layout. */
+.stationEngine.stationDone .stationIndex {
+  border-color: var(--v-replace);
+  color: var(--v-replace);
+}
+
+.stationHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+.stationName {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.engineTag {
+  padding: 2px 7px;
+  border: 1px solid color-mix(in srgb, var(--v-replace) 42%, transparent);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--v-replace) 10%, transparent);
+  color: var(--v-replace);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.stationTime {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-text-faint);
+}
+
+.stationSub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-text-dim);
+}
+
+.liveHint {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--brass);
+}
+
+.spinner {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid var(--ink-500);
+  border-top-color: var(--brass);
+  animation: spin 0.7s linear infinite;
+  margin-left: auto;
+}
+
+.stationBody {
+  margin-top: var(--s3);
+  animation: rise var(--base) var(--ease) both;
+}
+
+@keyframes rise {
   from {
     opacity: 0;
     transform: translateY(-4px);
@@ -538,266 +718,399 @@
   }
 }
 
-@media (max-width: 620px) {
-  .stageBody {
-    padding-left: 0;
+.note {
+  margin: var(--s3) 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-text-faint);
+}
+
+.note code {
+  font-size: 11px;
+  color: var(--ink-text-dim);
+}
+
+/* ========================== perception payload ========================== */
+
+.factRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+
+.fact {
+  padding: 4px 9px;
+  border: 1px solid var(--ink-500);
+  border-radius: var(--r-sm);
+  background: var(--ink-700);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-text-dim);
+}
+
+.factWarn {
+  color: var(--brass);
+  border-color: color-mix(in srgb, var(--brass) 42%, transparent);
+  background: color-mix(in srgb, var(--brass) 9%, transparent);
+}
+
+/* Evidence lines are machine output — set in mono, ruled like a log. */
+.evidenceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--ink-600);
+}
+
+.evidenceList li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--s2);
+  padding: 7px 0;
+  border-bottom: 1px solid var(--ink-600);
+  font-size: 13px;
+  color: var(--ink-text-dim);
+  line-height: 1.45;
+}
+
+.evidenceList li::before {
+  content: attr(data-n);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--ink-text-faint);
+  padding-top: 2px;
+}
+
+/* ============================ the verdict stamp =========================
+   The signature moment. A decision is not a card — it is stamped onto the
+   record, and it carries the serial of the rule that produced it. */
+
+.stamp {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: var(--s3) var(--s5);
+  border: 2px solid var(--verdict);
+  border-radius: var(--r);
+  color: var(--verdict);
+  transform: rotate(-1.4deg);
+  animation: press var(--base) var(--ease) both;
+}
+
+/* Double rule — the printed-seal convention. */
+.stamp::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid color-mix(in srgb, var(--verdict) 40%, transparent);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+@keyframes press {
+  from {
+    opacity: 0;
+    transform: rotate(-1.4deg) scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.4deg) scale(1);
   }
 }
 
-.stageNote {
-  margin: 11px 0 0;
-  font-size: 11.5px;
-  color: var(--text-faint);
-  font-style: italic;
-}
-
-.stageNote code {
-  font-style: normal;
-  font-size: 11px;
-}
-
-/* -------------------------- perceive payload -------------------------- */
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 11px;
-}
-
-.chip {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--bg-inset);
-  border: 1px solid var(--border-bright);
-  font-size: 12px;
-  color: var(--text-dim);
-}
-
-.chipWarn {
-  color: var(--accent);
-  border-color: rgba(240, 180, 41, 0.4);
-  background: rgba(240, 180, 41, 0.08);
-}
-
-.evidence {
-  margin: 0;
-  padding-left: 17px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-  color: var(--text-dim);
-}
-
-.evidence li::marker {
-  color: var(--text-faint);
-}
-
-/* ------------------------- adjudicate payload ------------------------- */
-
-.verdict {
+.stampRow {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 13px 15px;
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--verdict) 9%, transparent);
-  border: 1px solid color-mix(in srgb, var(--verdict) 38%, transparent);
+  gap: var(--s3);
 }
 
-.verdictAction {
-  font-size: 16px;
-  font-weight: 660;
-  color: var(--verdict);
+.stampIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
-.verdictAmount {
+.stampAction {
   font-family: var(--mono);
-  font-size: 19px;
-  font-weight: 640;
-  color: var(--text);
-  margin-left: auto;
-}
-
-.humanTag {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 15px;
   font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: var(--bg-inset);
-  border: 1px solid var(--border-bright);
-  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.verdictReason {
-  margin: 11px 0 0;
-  font-size: 13.5px;
-  color: var(--text-dim);
-  line-height: 1.5;
+.stampAmount {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink-text);
+  letter-spacing: -0.01em;
 }
 
-.audit {
-  margin-top: 13px;
+/* The serial line: which rule stamped this, and under which policy. */
+.stampSerial {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--verdict) 78%, var(--ink-text-faint));
 }
 
-.audit summary {
+.stampHuman {
+  display: inline-block;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-text-faint);
+}
+
+.reasonText {
+  margin: var(--s4) 0 0;
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-text-dim);
+  text-wrap: pretty;
+}
+
+/* ============================== audit ledger ============================ */
+
+.ledger {
+  margin-top: var(--s4);
+  border-top: 1px solid var(--ink-600);
+}
+
+.ledgerSummary {
+  padding: var(--s3) 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-text-dim);
   cursor: pointer;
-  font-size: 12.5px;
-  color: var(--text-dim);
-  padding: 6px 0;
-  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
 }
 
-.audit summary:hover {
-  color: var(--text);
+.ledgerSummary::-webkit-details-marker {
+  display: none;
+}
+
+.ledgerSummary::before {
+  content: "+";
+  font-size: 14px;
+  line-height: 1;
+  color: var(--ink-text-faint);
+}
+
+.ledger[open] .ledgerSummary::before {
+  content: "−";
+}
+
+.ledgerSummary:hover {
+  color: var(--ink-text);
 }
 
 .ruleList {
   list-style: none;
-  margin: 8px 0 0;
+  margin: 0 0 var(--s3);
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  border-top: 1px solid var(--ink-600);
 }
 
 .ruleList li {
   display: grid;
-  grid-template-columns: 178px minmax(0, 1fr) auto;
-  gap: 11px;
+  grid-template-columns: 176px minmax(0, 1fr) auto;
+  gap: var(--s3);
   align-items: baseline;
-  padding: 6px 9px;
-  border-radius: var(--radius-sm);
+  padding: 7px var(--s2);
+  border-bottom: 1px solid var(--ink-600);
   font-size: 12px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .ruleList li {
     grid-template-columns: minmax(0, 1fr);
     gap: 2px;
   }
 }
 
-.ruleList code {
+.ruleId {
+  font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-faint);
+  color: var(--ink-text-faint);
 }
 
 .ruleDesc {
-  color: var(--text-faint);
+  color: var(--ink-text-faint);
 }
 
 .ruleOutcome {
-  font-size: 11.5px;
-  color: var(--text-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-text-faint);
   text-align: right;
 }
 
 .rulePassed {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 .ruleFired {
-  background: rgba(74, 168, 240, 0.1);
-  border: 1px solid rgba(74, 168, 240, 0.28);
+  background: color-mix(in srgb, var(--v-replace) 9%, transparent);
 }
 
-.ruleFired code {
-  color: var(--replace);
+.ruleFired .ruleId {
+  color: var(--v-replace);
   font-weight: 600;
 }
 
 .ruleFired .ruleDesc {
-  color: var(--text);
+  color: var(--ink-text);
 }
 
 .ruleFired .ruleOutcome {
-  color: var(--replace);
-  font-weight: 550;
+  color: var(--v-replace);
 }
 
-/* --------------------------- compose payload -------------------------- */
+/* ============================= the letter ===============================
+   The second signature. Everything above is the machine's console; this is
+   the artifact a person receives. It is paper: warm stock, serif type,
+   printed rules. The material change marks the boundary. */
 
-.message {
-  padding: 15px 17px;
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius);
-  font-size: 14px;
-  line-height: 1.6;
+.letter {
+  position: relative;
+  padding: var(--s5) var(--s5) var(--s4);
+  background: var(--paper);
+  color: var(--paper-text);
+  border-radius: var(--r-sm);
+  box-shadow:
+    0 1px 0 var(--paper-edge),
+    0 14px 28px -18px rgba(0, 0, 0, 0.9);
+  max-width: 66ch;
 }
 
-.message p {
-  margin: 0 0 11px;
+.letterHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding-bottom: var(--s3);
+  margin-bottom: var(--s4);
+  border-bottom: 1px solid var(--paper-rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-text-dim);
 }
 
-.message p:last-child {
+.letterBody {
+  font-family: var(--serif);
+  font-size: 15.5px;
+  line-height: 1.68;
+  text-wrap: pretty;
+}
+
+.letterBody p {
+  margin: 0 0 var(--s3);
+}
+
+.letterBody p:last-child {
   margin-bottom: 0;
 }
 
+.letterSign {
+  margin-top: var(--s5);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--paper-rule);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-text-dim);
+}
+
+/* =============================== ticket ================================= */
+
 .ticket {
-  margin-top: 11px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  margin-top: var(--s3);
+  padding: var(--s3);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--r);
+  background: var(--ink-800);
 }
 
 .ticketLabel {
   display: block;
-  font-size: 10.5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--text-faint);
-  margin-bottom: 6px;
-  font-weight: 620;
+  color: var(--ink-text-faint);
+  margin-bottom: var(--s2);
 }
 
 .ticketSubject {
   display: block;
+  font-family: var(--mono);
   font-size: 12.5px;
-  color: var(--text);
-  margin-bottom: 7px;
+  color: var(--ink-text);
+  margin-bottom: 6px;
   word-break: break-word;
 }
 
 .ticketSummary {
   margin: 0;
   font-size: 12.5px;
-  color: var(--text-dim);
-  line-height: 1.5;
+  line-height: 1.55;
+  color: var(--ink-text-dim);
+  max-width: 68ch;
 }
 
-/* ------------------------------- footer ------------------------------- */
+/* ============================ footer / notes ============================ */
 
 .fallbackNote {
   margin: 0;
-  padding: 12px 15px;
-  border-radius: var(--radius);
-  background: rgba(240, 180, 41, 0.07);
-  border: 1px solid rgba(240, 180, 41, 0.28);
+  padding: var(--s3) var(--s4);
+  border: 1px solid color-mix(in srgb, var(--brass) 32%, transparent);
+  border-radius: var(--r);
+  background: color-mix(in srgb, var(--brass) 7%, transparent);
   font-size: 12.5px;
-  color: var(--text-dim);
-  line-height: 1.5;
+  line-height: 1.55;
+  color: var(--ink-text-dim);
+  max-width: 78ch;
 }
 
 .fallbackNote strong {
-  color: var(--accent);
+  color: var(--brass);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .footer {
-  margin-top: 44px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  text-align: center;
+  margin-top: var(--s7);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--ink-600);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-text-faint);
 }
 
 .footer p {
   margin: 0;
-  font-size: 12px;
-  color: var(--text-faint);
 }

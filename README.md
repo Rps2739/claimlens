@@ -142,7 +142,7 @@ Restart the dev server. The badge flips to "Live analysis enabled" and the uploa
 ### Tests
 
 ```bash
-npm test             # 37 tests, no API key required
+npm test             # 45 tests, no API key required
 ```
 
 ### Deploying
@@ -175,12 +175,14 @@ lib/
   perceive.ts               Gemini vision → validated evidence
   compose.ts                Gemini → customer copy, decision-constrained
   gemini.ts                 Client, typed errors, timeouts
+  orders.ts                 THE ORDER SYSTEM — server-held prices
   ratelimit.ts              Per-IP + global daily caps on billable calls
   samples.ts                Four demo claims + cached model responses
 __tests__/
   adjudicate.test.ts        19 tests on the decision engine
   samples.test.ts            9 tests pinning what each demo proves
   ratelimit.test.ts          9 tests on abuse protection
+  orders.test.ts             8 tests on the price-forgery boundary
 public/samples/             Original SVG artwork (see Attribution)
 ```
 
@@ -209,6 +211,7 @@ R10  COSMETIC             severity 1              → partial credit
 
 | Concern | Handling |
 |---|---|
+| **Payout forgery** | The request schema has **no price field**. Callers send an `order_id`; the server resolves the real record from [`lib/orders.ts`](lib/orders.ts). An earlier version accepted the whole order object, so a crafted request could claim a ₹899 mug was worth ₹14,999 and be refunded the larger figure — a UI with no price input is not a security boundary, an API with no price field is. [Regression-tested](__tests__/orders.test.ts). |
 | **API key exposure** | Key is read only inside server routes. `lib/gemini.ts`, `perceive.ts`, and `compose.ts` all `import "server-only"` — if a client component ever imports them, **the build fails** rather than shipping the key. Verified: no `process.env.GEMINI` access and no key pattern in `.next/static/`. |
 | **Prompt injection via image** | Text in a photo is described, never obeyed — stated in the system prompt, and structurally irrelevant because perception output can't express a remedy. |
 | **Prompt injection via customer text** | The description is delimited and explicitly labelled untrusted context. |

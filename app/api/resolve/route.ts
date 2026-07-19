@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { adjudicate } from "@/lib/adjudicate";
 import { compose, composeFallback } from "@/lib/compose";
-import { MissingKeyError, QuotaError, hasApiKey } from "@/lib/gemini";
+import { QuotaError, hasApiKey } from "@/lib/gemini";
 import { perceive } from "@/lib/perceive";
+import { getOrder } from "@/lib/orders";
 import { budgetRemaining, checkRateLimit, clientIp } from "@/lib/ratelimit";
 import { getSample } from "@/lib/samples";
 import { ResolveRequest } from "@/lib/types";
@@ -49,11 +50,21 @@ export async function POST(req: Request) {
     );
   }
 
-  const { image_base64, image_mime_type, description, order, sample_id } = parsed.data;
+  const { image_base64, image_mime_type, description, order_id, sample_id } = parsed.data;
   const sample = sample_id ? getSample(sample_id) : undefined;
 
   if (sample_id && !sample) {
     return NextResponse.json({ error: `Unknown sample "${sample_id}".` }, { status: 404 });
+  }
+
+  // The trusted half of the input. Resolved here, on the server, from an ID —
+  // never taken from the request body. This is the line that makes "the
+  // customer never controls the money" true at the API level and not merely
+  // in the UI. `item_value` feeds the payout calculation directly, so a
+  // caller-supplied value would let anyone name their own refund.
+  const order = getOrder(order_id);
+  if (!order) {
+    return NextResponse.json({ error: `Unknown order "${order_id}".` }, { status: 404 });
   }
 
   const timings = { perceive: 0, adjudicate: 0, compose: 0 };
@@ -64,11 +75,16 @@ export async function POST(req: Request) {
   let perception: PerceptionResult;
   const t0 = Date.now();
 
-  if (!hasApiKey() && sample) {
-    // No key configured: replay this sample's cached observations.
+  if (sample) {
+    // Bundled samples always replay their cached, deterministic analysis —
+    // with or without a live key. They exist precisely so the primary
+    // demo path never depends on network availability or quota. Only a
+    // genuine photo upload (handled below) ever calls Gemini live.
     perception = sample.cachedPerception;
     source = "cached";
-    fallback_reason = "No API key is configured, so this sample replays a cached analysis.";
+    fallback_reason = hasApiKey()
+      ? undefined
+      : "No API key is configured, so this sample replays a cached analysis.";
     timings.perceive = Date.now() - t0;
   } else if (!hasApiKey()) {
     return NextResponse.json(
@@ -93,19 +109,15 @@ export async function POST(req: Request) {
       // so throttling an abuser never degrades the demo for a reviewer.
       const limit = checkRateLimit(clientIp(req));
       if (!limit.allowed) {
-        // A bundled sample can still fall back to cache; an upload cannot.
-        if (!sample) {
-          return NextResponse.json(
-            { error: "rate_limited", message: limit.reason },
-            {
-              status: 429,
-              headers: limit.retryAfterSeconds
-                ? { "Retry-After": String(limit.retryAfterSeconds) }
-                : undefined,
-            }
-          );
-        }
-        throw new QuotaError(limit.reason ?? "Rate limited");
+        return NextResponse.json(
+          { error: "rate_limited", message: limit.reason },
+          {
+            status: 429,
+            headers: limit.retryAfterSeconds
+              ? { "Retry-After": String(limit.retryAfterSeconds) }
+              : undefined,
+          }
+        );
       }
 
       perception = await perceive(image_base64, image_mime_type, description);
@@ -113,32 +125,21 @@ export async function POST(req: Request) {
     } catch (err) {
       timings.perceive = Date.now() - t0;
 
-      // A bundled sample can always fall back; an arbitrary upload cannot.
-      if (!sample) {
-        const quota = err instanceof QuotaError;
-        return NextResponse.json(
-          {
-            error: quota ? "quota_exceeded" : "perception_failed",
-            message: quota
-              ? "The daily free-tier quota for image analysis is used up. The four sample claims below still work — they replay cached analyses."
-              : `Could not analyse that image: ${
-                  err instanceof Error ? err.message : "unknown error"
-                }. The sample claims below still work.`,
-          },
-          { status: quota ? 429 : 502 }
-        );
-      }
-
-      perception = sample.cachedPerception;
-      source = "cached";
-      fallback_reason =
-        err instanceof QuotaError
-          ? "Live analysis hit the free-tier quota, so this sample replayed a cached analysis."
-          : err instanceof MissingKeyError
-            ? "No API key is configured, so this sample replays a cached analysis."
-            : `Live analysis was unavailable (${
+      // This branch only ever runs for a genuine photo upload — sample
+      // requests are fully handled above and never reach here — so there is
+      // no cached fallback available; report the failure honestly.
+      const quota = err instanceof QuotaError;
+      return NextResponse.json(
+        {
+          error: quota ? "quota_exceeded" : "perception_failed",
+          message: quota
+            ? "The daily free-tier quota for image analysis is used up. The four sample claims below still work — they replay cached analyses."
+            : `Could not analyse that image: ${
                 err instanceof Error ? err.message : "unknown error"
-              }), so this sample replayed a cached analysis.`;
+              }. The sample claims below still work.`,
+        },
+        { status: quota ? 429 : 502 }
+      );
     }
   }
 

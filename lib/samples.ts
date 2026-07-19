@@ -1,4 +1,19 @@
+import { getOrder } from "./orders";
 import type { ComposedResponse, OrderContext, PerceptionResult } from "./types";
+
+/**
+ * Read an order from the order system.
+ *
+ * Samples reference orders by ID rather than restating item names and prices,
+ * so the demo cannot drift out of sync with the records the server actually
+ * adjudicates against. Throws at module load if an ID is wrong, which turns a
+ * typo into an immediate startup failure rather than a silently wrong payout.
+ */
+function order(orderId: string): OrderContext {
+  const found = getOrder(orderId);
+  if (!found) throw new Error(`Sample references unknown order "${orderId}"`);
+  return found;
+}
 
 /**
  * The four bundled demo claims.
@@ -42,14 +57,7 @@ export const SAMPLES: SampleCase[] = [
     image: "/samples/mug-broken.svg",
     description:
       "The box was crushed when it arrived and the mug inside is in pieces.",
-    order: {
-      order_id: "ORD-2291",
-      item_name: "Stoneware Coffee Mug 350ml",
-      item_value: 899,
-      days_since_delivery: 5,
-      category: "home",
-      prior_claims_count: 0,
-    },
+    order: order("ORD-2291"),
     cachedPerception: {
       item_type: "ceramic coffee mug",
       damage_type: "physical_damage",
@@ -81,14 +89,7 @@ export const SAMPLES: SampleCase[] = [
     image: "/samples/phone-cracked.svg",
     description:
       "Screen was already shattered when I opened the box. I never even powered it on.",
-    order: {
-      order_id: "ORD-8834",
-      item_name: 'Aurora X9 Smartphone 256GB',
-      item_value: 64999,
-      days_since_delivery: 12,
-      category: "electronics",
-      prior_claims_count: 0,
-    },
+    order: order("ORD-8834"),
     cachedPerception: {
       item_type: "smartphone",
       damage_type: "cracked_screen",
@@ -120,14 +121,7 @@ export const SAMPLES: SampleCase[] = [
     image: "/samples/wrong-item.svg",
     description:
       "I ordered a navy polo in medium and a red one in large turned up instead.",
-    order: {
-      order_id: "ORD-4417",
-      item_name: "Classic Polo Shirt — Navy, M",
-      item_value: 1299,
-      days_since_delivery: 3,
-      category: "apparel",
-      prior_claims_count: 0,
-    },
+    order: order("ORD-4417"),
     cachedPerception: {
       item_type: "polo shirt",
       damage_type: "wrong_item",
@@ -158,14 +152,7 @@ export const SAMPLES: SampleCase[] = [
     teaser: "The system refuses to guess → routed to a human",
     image: "/samples/blurry-unclear.svg",
     description: "it broke, look at the photo, i want my money back",
-    order: {
-      order_id: "ORD-6120",
-      item_name: "Table Lamp — Brushed Brass",
-      item_value: 2499,
-      days_since_delivery: 8,
-      category: "home",
-      prior_claims_count: 0,
-    },
+    order: order("ORD-6120"),
     cachedPerception: {
       item_type: "unidentifiable object",
       damage_type: "unclear",

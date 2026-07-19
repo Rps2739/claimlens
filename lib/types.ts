@@ -107,13 +107,27 @@ export const ComposedResponse = z.object({
 });
 export type ComposedResponse = z.infer<typeof ComposedResponse>;
 
-/** Request body accepted by POST /api/resolve. */
+/**
+ * Request body accepted by POST /api/resolve.
+ *
+ * SECURITY: this schema deliberately carries NO monetary or order fields —
+ * only an `order_id` reference. The server looks the real record up in the
+ * order system (`lib/orders.ts`) and ignores anything else the caller might
+ * try to supply.
+ *
+ * An earlier version accepted the whole `OrderContext` from the client, which
+ * meant a crafted request could claim a ₹899 mug was worth ₹14,999 and be
+ * refunded the larger amount. Removing the field is what makes "the customer
+ * never controls the money" a property of the API rather than a property of
+ * the UI — a hidden form field is not a security boundary.
+ */
 export const ResolveRequest = z.object({
   /** Base64 image data URL, or omitted when running a bundled sample. */
   image_base64: z.string().optional(),
   image_mime_type: z.string().optional(),
   description: z.string().max(1000),
-  order: OrderContext,
+  /** Reference only. The server resolves this to a trusted order record. */
+  order_id: z.string().min(1).max(64),
   /** Set when replaying a bundled sample case; enables the cached path. */
   sample_id: z.string().optional(),
 });
