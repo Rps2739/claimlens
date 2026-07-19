@@ -86,7 +86,7 @@ function Glyph({ action, className }: { action: string; className?: string }) {
 }
 
 export default function Page() {
-  const [selected, setSelected] = useState<SampleCase>(SAMPLES[0]);
+  const [selected, setSelected] = useState<SampleCase | null>(null);
   const [stages, setStages] = useState<Record<Stage, StageState>>({
     intake: "idle",
     perceive: "idle",
@@ -122,6 +122,19 @@ export default function Page() {
       .catch(() => setLiveMode(false));
     return clearTimers;
   }, []);
+
+  const readResolveResponse = async (res: Response) => {
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error(
+        res.status === 404
+          ? "The claim API was not found. On Render, deploy this project as a Web Service, not a Static Site."
+          : "The server returned a non-JSON response. Check the Render deploy logs for the API route."
+      );
+    }
+  };
 
   useEffect(() => {
     if (stages.perceive !== "running") {
@@ -166,7 +179,7 @@ export default function Page() {
           }),
         });
 
-        const data = await res.json();
+        const data = await readResolveResponse(res);
 
         if (!res.ok) {
           const message = data.message ?? data.error ?? "Something went wrong.";
@@ -194,9 +207,13 @@ export default function Page() {
             );
           }, 560)
         );
-      } catch {
-        setError("Could not reach the server. Check your connection and try again.");
-        setAnnouncement("Could not reach the server.");
+      } catch (err) {
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Could not reach the server. Check your connection and try again.";
+        setError(message);
+        setAnnouncement(`Claim could not be assessed: ${message}`);
         setStages({ intake: "done", perceive: "idle", adjudicate: "idle", compose: "idle" });
       } finally {
         setBusy(false);
@@ -242,8 +259,9 @@ export default function Page() {
 
   const decision = result?.decision;
   const decidingRule = decision?.rules_fired[decision.rules_fired.length - 1];
-  const imageSrc = upload?.dataUrl ?? selected.image;
-  const ready = upload ? statement.trim().length > 0 : true;
+  const imageSrc = upload?.dataUrl ?? selected?.image;
+  const ready = Boolean(selected) && (upload ? statement.trim().length > 0 : true);
+  const activeOrder = selected?.order;
 
   return (
     <main className={styles.page}>
@@ -281,15 +299,17 @@ export default function Page() {
           <h2 className={styles.railTitle}>Open cases</h2>
           <p className={styles.railHint}>Each one stops at a different rule.</p>
 
-          <div className={styles.caseList}>
+          <div className={styles.caseList} role="tablist" aria-label="Sample claim cases">
             {SAMPLES.map((s) => (
               <button
                 key={s.id}
+                type="button"
+                role="tab"
                 onClick={() => pickCase(s)}
                 className={`${styles.caseRow} ${
-                  selected.id === s.id ? styles.caseRowActive : ""
+                  selected?.id === s.id ? styles.caseRowActive : ""
                 }`}
-                aria-pressed={selected.id === s.id}
+                aria-selected={selected?.id === s.id}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={s.image} alt="" className={styles.caseThumb} />
@@ -316,7 +336,9 @@ export default function Page() {
             <p className={styles.uploadNote}>
               {liveMode === false
                 ? "Live analysis needs a GEMINI_API_KEY on the server. The cases above run without one."
-                : "Your photograph is filed as evidence against the order below. Select a different case first if this claim concerns another order."}
+                : selected
+                  ? "Your photograph is filed as evidence against the selected order. Select a different case first if this claim concerns another order."
+                  : "Select a sample case first. Its order record stays server-held and supplies the trusted price."}
             </p>
           </div>
 
@@ -332,32 +354,38 @@ export default function Page() {
               </span>
             </div>
 
-            <dl className={styles.recordList}>
-              <div>
-                <dt>Order</dt>
-                <dd>{selected.order.order_id}</dd>
+            {activeOrder ? (
+              <dl className={styles.recordList}>
+                <div>
+                  <dt>Order</dt>
+                  <dd>{activeOrder.order_id}</dd>
+                </div>
+                <div>
+                  <dt>Item</dt>
+                  <dd>{activeOrder.item_name}</dd>
+                </div>
+                <div>
+                  <dt>Value</dt>
+                  <dd className={styles.recordValue}>{money(activeOrder.item_value)}</dd>
+                </div>
+                <div>
+                  <dt>Delivered</dt>
+                  <dd>{activeOrder.days_since_delivery}d ago</dd>
+                </div>
+                <div>
+                  <dt>Category</dt>
+                  <dd>{activeOrder.category}</dd>
+                </div>
+                <div>
+                  <dt>Prior claims</dt>
+                  <dd>{activeOrder.prior_claims_count}</dd>
+                </div>
+              </dl>
+            ) : (
+              <div className={styles.emptyRecord}>
+                Select a case to load its server-held order record.
               </div>
-              <div>
-                <dt>Item</dt>
-                <dd>{selected.order.item_name}</dd>
-              </div>
-              <div>
-                <dt>Value</dt>
-                <dd className={styles.recordValue}>{money(selected.order.item_value)}</dd>
-              </div>
-              <div>
-                <dt>Delivered</dt>
-                <dd>{selected.order.days_since_delivery}d ago</dd>
-              </div>
-              <div>
-                <dt>Category</dt>
-                <dd>{selected.order.category}</dd>
-              </div>
-              <div>
-                <dt>Prior claims</dt>
-                <dd>{selected.order.prior_claims_count}</dd>
-              </div>
-            </dl>
+            )}
 
             <p className={styles.recordNote}>
               Read from the order system by ID. The request carries no price field, so
@@ -370,11 +398,17 @@ export default function Page() {
         <section className={styles.main}>
           <div className={styles.exhibit}>
             <div className={styles.exhibitFrame}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imageSrc} alt="Claim evidence" className={styles.exhibitImage} />
-              <span className={styles.exhibitTag}>
-                Exhibit A · {selected.order.order_id}
-              </span>
+              {imageSrc ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imageSrc} alt="Claim evidence" className={styles.exhibitImage} />
+                  <span className={styles.exhibitTag}>
+                    Exhibit A · {activeOrder?.order_id}
+                  </span>
+                </>
+              ) : (
+                <div className={styles.emptyExhibit}>No exhibit selected</div>
+              )}
             </div>
 
             <div className={styles.exhibitBody}>
@@ -391,15 +425,17 @@ export default function Page() {
                     rows={3}
                     maxLength={1000}
                   />
-                ) : (
+                ) : selected ? (
                   <p className={styles.statement}>{selected.description}</p>
+                ) : (
+                  <p className={styles.statementMuted}>Choose one of the sample cases to begin.</p>
                 )}
               </div>
 
               <div className={styles.actionRow}>
                 <button
                   className={styles.runButton}
-                  onClick={() => run(selected, upload, statement)}
+                  onClick={() => selected && run(selected, upload, statement)}
                   disabled={busy || !ready}
                   aria-describedby={upload && !ready ? "statement-hint" : undefined}
                 >
@@ -558,7 +594,7 @@ export default function Page() {
                     <div className={styles.stationBody}>
                       <article className={styles.letter}>
                         <div className={styles.letterHead}>
-                          <span>{selected.order.order_id}</span>
+                          <span>{activeOrder?.order_id}</span>
                           <span>Customer copy</span>
                         </div>
                         <div className={styles.letterBody}>

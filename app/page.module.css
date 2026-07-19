@@ -390,6 +390,14 @@
   color: var(--ink-text-faint);
 }
 
+.emptyRecord {
+  padding: var(--s5) var(--s3);
+  border-bottom: 1px solid var(--ink-600);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-text-faint);
+}
+
 /* =============================== exhibit ================================ */
 
 .exhibit {
@@ -421,6 +429,21 @@
   border: 1px solid var(--ink-600);
   border-radius: var(--r-sm);
   background: var(--ink-700);
+}
+
+.emptyExhibit {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px dashed var(--ink-500);
+  border-radius: var(--r-sm);
+  background: var(--ink-700);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-text-faint);
 }
 
 /* An evidence tag, pinned to the corner of the exhibit. */
@@ -470,6 +493,14 @@
   max-width: 58ch;
   color: var(--ink-text);
   text-wrap: pretty;
+}
+
+.statementMuted {
+  margin: 0;
+  padding-left: var(--s4);
+  border-left: 2px solid var(--ink-600);
+  font-size: 14px;
+  color: var(--ink-text-faint);
 }
 
 .statementInput {
